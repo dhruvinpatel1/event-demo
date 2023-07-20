@@ -1,176 +1,203 @@
-import * as React from "react"
+import React from 'react'
+import Footer from '../components/Footer'
+import Menu from '../components/Menu'
+import parse from 'html-react-parser';
+import { Link } from 'gatsby';
+import { ArrowLongRightIcon } from '@heroicons/react/24/solid'
+import { CalendarIcon, ArrowLeftCircleIcon, ArrowRightCircleIcon } from '@heroicons/react/24/outline'
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Navigation } from 'swiper/modules';
+import 'swiper/css/navigation';
+import 'swiper/css';
 
-const pageStyles = {
-  color: "#232129",
-  padding: 96,
-  fontFamily: "-apple-system, Roboto, sans-serif, serif",
-}
-const headingStyles = {
-  marginTop: 0,
-  marginBottom: 64,
-  maxWidth: 320,
-}
-const headingAccentStyles = {
-  color: "#663399",
-}
-const paragraphStyles = {
-  marginBottom: 48,
-}
-const codeStyles = {
-  color: "#8A6534",
-  padding: 4,
-  backgroundColor: "#FFF4DB",
-  fontSize: "1.25rem",
-  borderRadius: 4,
-}
-const listStyles = {
-  marginBottom: 96,
-  paddingLeft: 0,
-}
-const listItemStyles = {
-  fontWeight: 300,
-  fontSize: 24,
-  maxWidth: 560,
-  marginBottom: 30,
-}
 
-const linkStyle = {
-  color: "#8954A8",
-  fontWeight: "bold",
-  fontSize: 16,
-  verticalAlign: "5%",
-}
+export default function index({ serverData }) {
+  const { footer, menu, home } = serverData
+  const homePagedata = home.data.attributes
 
-const docLinkStyle = {
-  ...linkStyle,
-  listStyleType: "none",
-  marginBottom: 24,
-}
+  console.log("home", homePagedata.news_Slider)
 
-const descriptionStyle = {
-  color: "#232129",
-  fontSize: 14,
-  marginTop: 10,
-  marginBottom: 0,
-  lineHeight: 1.25,
-}
+  function formatDateToCustomFormat(dateArray) {
+    const dateObject = new Date(dateArray);
 
-const docLink = {
-  text: "Documentation",
-  url: "https://www.gatsbyjs.com/docs/",
-  color: "#8954A8",
-}
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
 
-const badgeStyle = {
-  color: "#fff",
-  backgroundColor: "#088413",
-  border: "1px solid #088413",
-  fontSize: 11,
-  fontWeight: "bold",
-  letterSpacing: 1,
-  borderRadius: 4,
-  padding: "4px 6px",
-  display: "inline-block",
-  position: "relative",
-  top: -2,
-  marginLeft: 10,
-  lineHeight: 1,
-}
+    // Format the date to "March 4, 2022" format
+    return dateObject.toLocaleDateString("en-US", options);
+  }
 
-const links = [
-  {
-    text: "Tutorial",
-    url: "https://www.gatsbyjs.com/docs/tutorial/getting-started/",
-    description:
-      "A great place to get started if you're new to web development. Designed to guide you through setting up your first Gatsby site.",
-    color: "#E95800",
-  },
-  {
-    text: "How to Guides",
-    url: "https://www.gatsbyjs.com/docs/how-to/",
-    description:
-      "Practical step-by-step guides to help you achieve a specific goal. Most useful when you're trying to get something done.",
-    color: "#1099A8",
-  },
-  {
-    text: "Reference Guides",
-    url: "https://www.gatsbyjs.com/docs/reference/",
-    description:
-      "Nitty-gritty technical descriptions of how Gatsby works. Most useful when you need detailed information about Gatsby's APIs.",
-    color: "#BC027F",
-  },
-  {
-    text: "Conceptual Guides",
-    url: "https://www.gatsbyjs.com/docs/conceptual/",
-    description:
-      "Big-picture explanations of higher-level Gatsby concepts. Most useful for building understanding of a particular topic.",
-    color: "#0D96F2",
-  },
-  {
-    text: "Plugin Library",
-    url: "https://www.gatsbyjs.com/plugins",
-    description:
-      "Add functionality and customize your Gatsby site or app with thousands of plugins built by our amazing developer community.",
-    color: "#8EB814",
-  },
-  {
-    text: "Build and Host",
-    url: "https://www.gatsbyjs.com/cloud",
-    badge: true,
-    description:
-      "Now you’re ready to show the world! Give your Gatsby site superpowers: Build and host on Gatsby Cloud. Get started for free!",
-    color: "#663399",
-  },
-]
-
-const IndexPage = () => {
   return (
-    <main style={pageStyles}>
-      <h1 style={headingStyles}>
-        Congratulations
-        <br />
-        <span style={headingAccentStyles}>— you just made a Gatsby site! 🎉🎉🎉</span>
-      </h1>
-      <p style={paragraphStyles}>
-        Edit <code style={codeStyles}>src/pages/index.js</code> to see this page
-        update in real-time. 😎
-      </p>
-      <ul style={listStyles}>
-        <li style={docLinkStyle}>
-          <a
-            style={linkStyle}
-            href={`${docLink.url}?utm_source=starter&utm_medium=start-page&utm_campaign=minimal-starter`}
-          >
-            {docLink.text}
-          </a>
-        </li>
-        {links.map(link => (
-          <li key={link.url} style={{ ...listItemStyles, color: link.color }}>
-            <span>
-              <a
-                style={linkStyle}
-                href={`${link.url}?utm_source=starter&utm_medium=start-page&utm_campaign=minimal-starter`}
-              >
-                {link.text}
-              </a>
-              {link.badge && (
-                <span style={badgeStyle} aria-label="New Badge">
-                  NEW!
-                </span>
-              )}
-              <p style={descriptionStyle}>{link.description}</p>
-            </span>
-          </li>
-        ))}
-      </ul>
-      <img
-        alt="Gatsby G Logo"
-        src="data:image/svg+xml,%3Csvg width='24' height='24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2a10 10 0 110 20 10 10 0 010-20zm0 2c-3.73 0-6.86 2.55-7.75 6L14 19.75c3.45-.89 6-4.02 6-7.75h-5.25v1.5h3.45a6.37 6.37 0 01-3.89 4.44L6.06 9.69C7 7.31 9.3 5.63 12 5.63c2.13 0 4 1.04 5.18 2.65l1.23-1.06A7.959 7.959 0 0012 4zm-8 8a8 8 0 008 8c.04 0 .09 0-8-8z' fill='%23639'/%3E%3C/svg%3E"
-      />
-    </main>
+
+    <>
+      <Menu menu={menu.data.attributes} />
+      <div>
+        <div className='w-full h-[600px] relative'>
+          <div className='bg-transparent bg-no-repeat bg-cover bg-center-top w-full h-full' style={{ backgroundImage: `url(${process.env.PUBLIC_SITE_URL}${homePagedata.homepage_banner.bannerimg.data.attributes.url})` }}>
+            <div className='absolute inset-0 flex items-center justify-center'>
+              <div className='text-white text-center'>
+                <h1 className='text-[50px] font-bold'>{homePagedata.homepage_banner.bannerinfo[0].title}</h1>
+                <h1 className='text-[50px] font-bold'>{homePagedata.homepage_banner.bannerinfo[1].title}</h1>
+                <h2 className='text-[24px]'>{homePagedata.homepage_banner.bannerinfo[2].title}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="relative container !max-w-[1290px] mx-auto">
+          <div className="text-center pt-[90px] pb-[55px]">
+            <p className='font-bold uppercase text-xs mb-[15px]'>{homePagedata.homepage_content.title1}</p>
+            <h3 className='mb-[25px] text-5xl font-semibold text-[#767171]'>{homePagedata.homepage_content.title2}</h3>
+            <div className='grid grid-cols-2 gap-3 pt-[10px] pb-[30px]'>
+              <div className='text-left leading-8 font-normal text-[#767171]'>{parse(homePagedata.homepage_content.left_content)}</div>
+              <div className='text-left leading-8 font-normal text-[#767171]'>{parse(homePagedata.homepage_content.right_content)}</div>
+            </div>
+            <div className='pt-[20px]'>
+              <Link to={homePagedata.homepage_content.button_link} className="py-6 px-11 bg-[#9E0851] text-white "><span className='pr-4'>{homePagedata.homepage_content.button_label}</span><ArrowLongRightIcon className='w-7 h-7 inline-block' /></Link>
+            </div>
+          </div>
+          <div className="text-center pt-[70px]">
+            <h2 className="text-3xl mb-[20px] font-semibold text-[#767171]">{homePagedata.gallery_section.title1}</h2>
+            <h2 className="text-5xl mb-[20px] font-semibold text-[#767171]">{homePagedata.gallery_section.title2}</h2>
+            <div className='grid grid-cols-2 gap-3 min-h-[250px] pt-[10px] pb-[10px]'>
+              {
+                homePagedata.gallery_section.galleryImage.map((gallery, index) => (
+                  <div key={index} className='bg-transparent bg-no-repeat bg-cover bg-[50%] w-full h-full relative' style={{ backgroundImage: `url(${process.env.PUBLIC_SITE_URL}${gallery.image.data.attributes.url})` }}>
+                    <div className='absolute inset-0 flex items-center justify-center'>
+                      <div className='text-white text-center'>
+                        <h1 className='text-[42px] font-semibold'>{gallery.title}</h1>
+                        <div className='mt-[15px]'>
+                          <Link to={gallery.link} className="p-[20px] bg-[#9E0851] text-white border-[1px] border-white "><span className='pr-4 text-[11px] uppercase'>{gallery.button_label}</span><ArrowLongRightIcon className='w-6 h-6 inline-block' /></Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              }
+
+            </div>
+          </div>
+          <div className="text-center">
+            <div className='grid grid-cols-4 gap-3 min-h-[600px] pt-[10px] pb-[30px]'>
+              {
+                homePagedata.gallery_section1.galleryImage.map((gallery, index) => (
+                  <div key={index} className='bg-transparent bg-no-repeat bg-cover bg-[50%] w-full h-full relative' style={{ backgroundImage: `url(${process.env.PUBLIC_SITE_URL}${gallery.image.data.attributes.url})` }}>
+                    <div className='relative h-full'>
+                      <div className='absolute bottom-0 p-[35px] w-full text-white text-center'>
+                        <h1 className='text-[24px] font-semibold'>{gallery.title}</h1>
+                        <div className='mt-[15px] py-[10px] px-[25px] bg-[#9E0851] border-[1px] border-white'>
+                          <Link to={gallery.link} className='text-white'>
+                            <span className='pr-4 text-[11px] uppercase'>{gallery.button_label}</span>
+                            <ArrowLongRightIcon className='w-6 h-6 inline-block' />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+          <div>
+          </div>
+        </div>
+        <div className='text-center'>
+          <h3 className='text-[43px] text-[#4F4C4C] py-5 font-semibold'>{homePagedata.ambassadors_content.title}</h3>
+          <div className='py-[30px] px-[60px] bg-[#F6F6F6]'>
+            <Swiper
+              slidesPerView={7}
+              autoplay={{
+                delay: 2500,
+              }}
+              loop={true}
+              modules={[Autoplay]}
+              className="mySwiper w-[calc(100%_-_60px)]"
+            >
+              {homePagedata.ambassadors_content.slider.map((image, index) => (
+                <SwiperSlide className='!mr-[46px] !w-[193px]' key={index}><Link to={`${image.link}`}><img src={`${process.env.PUBLIC_SITE_URL}${image.image.data.attributes.url}`} alt={image.alt} className='rounded-[10px]' /></Link></SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </div>
+        <div className='relative container !max-w-[1290px] mx-auto'>
+          <div>
+            <div className='pt-[90px] pb-[35px] text-center'>
+              <p className='font-bold text-xs text-[#950851] pb-[15px] uppercase'>{homePagedata.video_content.title1}</p>
+              <h2 className='text-[42px] text-[#767171] uppercase font-semibold pb-[35px]'>{homePagedata.video_content.title2}</h2>
+              <div>
+                <iframe src="https://www.youtube.com/embed/Ia7JeZ-4roY?controls=1&rel=0&playsinline=0&modestbranding=0&autoplay=0&enablejsapi=1&origin=https%3A%2F%2Fthebrideshow.com&widgetid=1" className='aspect-video w-full h-full' />
+              </div>
+            </div>
+          </div>
+          <div className='pt-[90px] pb-[35px] text-center'>
+            <h2 className='text-[42px] text-[#767171] uppercase font-semibold pb-[25px]'>{homePagedata.news_Slider.title1}</h2>
+            <h2 className='text-[42px] text-[#767171] uppercase font-semibold pb-[35px]'>{homePagedata.news_Slider.title2}</h2>
+          </div>
+        </div>
+        <div className='border-t border-b border-[#E9E9E9]'>
+          <div className='relative mt-12'>
+            <Swiper
+              slidesPerView={3}
+              navigation={{
+                nextEl: '.review-swiper-button-next',
+                prevEl: '.review-swiper-button-prev',
+              }}
+              autoplay={{
+                delay: 2500,
+              }}
+              loop={true}
+              modules={[Autoplay, Navigation]}
+              className="mySwiper relative container !max-w-[1290px] mx-auto"
+            >
+              {homePagedata.news_Slider.New_Slider.map((image, index) => (
+                <SwiperSlide className='mb-[50px]' key={index}>
+                  {/* <Link to={`${image.link}`}> */}
+                  <div>
+                    <div className='px-[15px]'>
+                      <div className='mb-6 relative'>
+                        <Link>
+                          <img src={`${process.env.PUBLIC_SITE_URL}${image.image.data.attributes.url}`} alt={image.alt} className='' />
+                        </Link>
+                        <span className='bg-white absolute py-[10px] pr-[7px] bottom-0 '>
+                          Blog
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className='text-[20px] font-medium text-[#9E0851] mb-4'>{image.title}</h3>
+                        <div>
+                          <span className='uppercase text-[11px] text-[#9faaa7]'>post by <Link className='text-black'>BRIDE</Link></span>
+                          <span className='uppercase text-[11px] text-[#9faaa7] relative'> / <CalendarIcon className='inline-block w-4 h-4 absolute top-[-2px]' /> <span className='ml-[22px]'>{formatDateToCustomFormat(image.posted_date)}</span></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* </Link> */}
+                </SwiperSlide>
+              ))}
+              
+            </Swiper>
+            <ArrowLeftCircleIcon className="w-10 h-10 absolute top-1/2 left-[218px] review-swiper-button-next" />
+            <ArrowRightCircleIcon className="w-10 h-10 absolute top-1/2 right-[218px] review-swiper-button-prev" />
+          </div>
+        </div>
+      </div>
+      <Footer footer={footer.data.attributes} />
+    </>
+
   )
 }
 
-export default IndexPage
+export async function getServerData() {
+  const footerRes = await fetch(`${process.env.PUBLIC_SITE_URL}/api/footer?populate=deep`)
+  const footerData = await footerRes.json()
+  const menuRes = await fetch(`${process.env.PUBLIC_SITE_URL}/api/menus/4?nested&populate=*`)
+  const menuData = await menuRes.json()
+  const homeRes = await fetch(`${process.env.PUBLIC_SITE_URL}/api/home-page?nested&populate=deep`)
+  const homeData = await homeRes.json()
 
-export const Head = () => <title>Home Page</title>
+  return {
+    props: { footer: footerData, menu: menuData, home: homeData },
+  }
+}

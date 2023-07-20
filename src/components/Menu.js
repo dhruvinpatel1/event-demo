@@ -98,7 +98,7 @@ export default function Menu({ menu }) {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
         </div>
     )
 }
